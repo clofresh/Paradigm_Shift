@@ -7,38 +7,53 @@ function Player.new(x, y)
   properties.x = x
   properties.y = y
   properties.direction = 1
+  properties.actions = {}
+  
   return properties
 end
 
 function Player:update(dt)
-  local keys_pressed = {}
+  local next_actions = {}
   
   if love.keyboard.isDown(love.key_a) then
     self.x = self.x - (100 * dt)
-    table.insert(keys_pressed, love.key_a)
+    next_actions["walking"] = true
     self.direction = -1
   elseif love.keyboard.isDown(love.key_d) then
     self.x = self.x + (100 * dt)
-    table.insert(keys_pressed, love.key_d)
+    next_actions["walking"] = true
     self.direction = 1
   end
 
   if love.keyboard.isDown(love.key_w) then
     self.y = self.y - (100 * dt)
-    table.insert(keys_pressed, love.key_w)
+    next_actions["walking"] = true
   elseif love.keyboard.isDown(love.key_s) then
     self.y = self.y + (100 * dt)
-    table.insert(keys_pressed, love.key_s)
+    next_actions["walking"] = true
   end
   
-  if table.getn(keys_pressed) > 0 then
-    if self.animation == "standing" then
+  if love.keyboard.isDown(love.key_space) then
+    next_actions["punching"] = true
+  else
+    self.actions["punching"]  = false
+  end
+
+  if next_actions["punching"] then
+    if not self.actions["punching"] then
+      self.image = love.graphics.newAnimation(unpack(Animations["punching"]))
+      self.actions["punching"] = true
+    end
+  elseif next_actions["walking"] then
+    if self.actions["standing"] then
       self.image = love.graphics.newAnimation(unpack(Animations["walking"]))
-      self.animation = "walking"
+      self.actions["walking"] = true
+      self.actions["standing"] = false
     end
   else
     self.image = Animations["standing"][1]
-    self.animation = "standing"
+    self.actions["standing"] = true
+    self.actions["walking"] =  false
     
     if self.direction == -1 then
       -- weird workaround because negative scaling on an image
@@ -51,7 +66,7 @@ function Player:update(dt)
       )
     end
   end
-  
+    
   self.image:update(dt)
 end
 
@@ -69,7 +84,8 @@ function load()
   Animations = {
     ["standing"] = {love.graphics.newImage("standing.png"), 17, 32, 0.1},
     ["walking"]  = {love.graphics.newImage("walking.png"),  17, 32, 0.1},
-    ["running"]  = {love.graphics.newImage("running.png"),  22, 32, 0.1}
+    ["running"]  = {love.graphics.newImage("running.png"),  22, 32, 0.1},
+    ["punching"]  = {love.graphics.newImage("punching.png"),  29, 32, 0.1}
   }
 
   player = Player.new(400, 300)
