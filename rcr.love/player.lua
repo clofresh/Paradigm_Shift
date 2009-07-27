@@ -1,3 +1,5 @@
+require "animation.lua"
+
 Player = {}
 Player.__index = Player
 
@@ -41,30 +43,19 @@ function Player:update(dt)
 
   if next_actions["punching"] then
     if not self.actions["punching"] then
-      self.image = love.graphics.newAnimation(unpack(Animations["punching"]))
+      self.image = animation.getAnimation("punching")
       self.actions["punching"] = true
     end
   elseif next_actions["walking"] then
     if self.actions["standing"] then
-      self.image = love.graphics.newAnimation(unpack(Animations["walking"]))
+      self.image = animation.getAnimation("walking")
       self.actions["walking"] = true
       self.actions["standing"] = false
     end
   else
-    self.image = Animations["standing"][1]
+    self.image = animation.getAnimation("standing")
     self.actions["standing"] = true
     self.actions["walking"] =  false
-    
-    if self.direction == -1 then
-      -- weird workaround because negative scaling on an image
-      -- behaves differently from negative scaling an animation
-      self.image:setCenter(24, self.image:getHeight() / 2)
-    else
-      self.image:setCenter(
-        self.image:getWidth() / 2, 
-        self.image:getHeight() / 2
-      )
-    end
   end
     
   self.image:update(dt)
