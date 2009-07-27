@@ -100,3 +100,11 @@ function draw()
 end
 
 
+
+function keypressed(key) 
+	if key == love.key_tab then
+		love.system.restart() 
+	end
+end
+
+
