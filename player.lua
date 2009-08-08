@@ -10,6 +10,7 @@ function Player.new(x, y)
   setmetatable(properties, Player)
   properties.x = x
   properties.y = y
+  properties.speed = 100
   properties.direction = 1
   properties.actions = {}
   
@@ -36,20 +37,20 @@ function Player:update(dt)
   local next_actions = {}
   
   if love.keyboard.isDown(love.key_a) then
-    self.x = self.x - (100 * dt)
+    self.x = self.x - (self.speed * dt)
     next_actions["walking"] = true
     self.direction = -1
   elseif love.keyboard.isDown(love.key_d) then
-    self.x = self.x + (100 * dt)
+    self.x = self.x + (self.speed * dt)
     next_actions["walking"] = true
     self.direction = 1
   end
 
   if love.keyboard.isDown(love.key_w) then
-    self.y = self.y - (100 * dt)
+    self.y = self.y - (self.speed * dt)
     next_actions["walking"] = true
   elseif love.keyboard.isDown(love.key_s) then
-    self.y = self.y + (100 * dt)
+    self.y = self.y + (self.speed * dt)
     next_actions["walking"] = true
   end
   
