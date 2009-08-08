@@ -14,6 +14,14 @@ function Player.new(x, y)
   return properties
 end
 
+function Player:get_x()
+  return self.x
+end
+
+function Player:get_y()
+  return self.y
+end
+
 function Player:update(dt)
   local next_actions = {}
   
