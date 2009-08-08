@@ -10,6 +10,7 @@ function BadGuy.new(world, x, y)
     actions = {}    
   }
   properties.bounding_box = love.physics.newRectangleShape(properties.body, 17, 32)
+  properties.bounding_box:setData("badguy")
   properties.body:setMassFromShapes()
 
   setmetatable(properties, BadGuy)

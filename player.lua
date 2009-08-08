@@ -8,12 +8,30 @@ Player.camera_y_offset = -275
 function Player.new(world, x, y)
   local properties = {
     body = love.physics.newBody(world, x, y),
-    speed = 100.0,
+    speed = 10000,
+    jump = 5000000,
+    can_jump = nil,
     direction = 1,
     actions = {}    
   }
   properties.bounding_box = love.physics.newRectangleShape(properties.body, 17, 32)
+  properties.bounding_box:setFriction(1)
+  properties.bounding_box:setRestitution(0.05)
+  properties.bounding_box:setData("player")
   properties.body:setMassFromShapes()
+--  properties.fist = love.physics.newBody(world, x + 10, y - 5)
+--  properties.fist:setMass(0, 0, 5, 0)
+--[[
+  properties.arm = love.physics.newPrismaticJoint(
+    properties.body,
+    properties.fist, 
+    properties.body:getX() + 10, 
+    properties.body:getY() - 5, 
+    properties.body:getX() + 20, 
+    properties.body:getY() - 5
+  )
+
+]]--
 
   setmetatable(properties, Player)
   return properties
@@ -43,26 +61,35 @@ function Player:get_camera_y()
   return self:get_y() + Player.camera_y_offset
 end
 
+function Player:get_can_jump()
+  return self.can_jump
+end
+
+function Player:set_can_jump(val)
+  self.can_jump = val
+end
+
 function Player:update(dt)
   local next_actions = {}
-  local velocity = {0.01, 0.01} -- Fixes a bug where you can't move until you hit reset
   
   if love.keyboard.isDown(love.key_a) then
-    velocity[1] = -1 * self.speed
     next_actions["walking"] = true
     self.direction = -1
   elseif love.keyboard.isDown(love.key_d) then
-    velocity[1] = self.speed
+    self.body:applyImpulse(self.speed, 0)
     next_actions["walking"] = true
     self.direction = 1
   end
 
-  if love.keyboard.isDown(love.key_w) then
-    velocity[2] = -1 * self.speed
-    next_actions["walking"] = true
+  if love.keyboard.isDown(love.key_w) and self:get_can_jump() then
+    next_actions["jumping"] = true
+
+    vx, vy = self.body:getVelocity()
+    self.body:applyImpulse(0, -1 * self.jump)
+    self:set_can_jump(nil)
+
   elseif love.keyboard.isDown(love.key_s) then
-    velocity[2] = self.speed
-    next_actions["walking"] = true
+    -- nothing
   end
     
   if love.keyboard.isDown(love.key_space) then
@@ -75,8 +102,10 @@ function Player:update(dt)
     if not self.actions["punching"] then
       self.image = animation.getAnimation("punching")
       self.actions["punching"] = true
+      self.fist:applyForce(100 * self.direction, 0)
     end
   elseif next_actions["walking"] then
+    self.body:applyImpulse(self.direction * self.speed, 0)
     if self.actions["standing"] then
       self.image = animation.getAnimation("walking")
       self.actions["walking"] = true
@@ -88,12 +117,12 @@ function Player:update(dt)
     self.actions["walking"] =  false
   end
 
-  self.body:setVelocity(unpack(velocity))
   self.image:update(dt)
 end
 
 function Player:draw()
   love.graphics.draw(self.image, self:get_x(), self:get_y(), 0, self.direction, 1)
+--  love.graphics.circle(love.draw_fill, self.fist:getX(), self.fist:getY(), 5)
   
   -- Draw player's coordinate axis for debugging
   -- love.graphics.line(self:get_x() - 100, self:get_y(), self:get_x() + 100, self:get_y())
