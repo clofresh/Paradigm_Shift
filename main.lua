@@ -16,7 +16,7 @@ end
 function draw()
   player:draw()
   badguy:draw()
-  getCamera():setOrigin(player:get_x() - 150, player:get_y() - 275)
+  getCamera():setOrigin(player:get_camera_x(), player:get_camera_y())
 end
 
 function keypressed(key) 

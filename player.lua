@@ -2,6 +2,8 @@ require "animation.lua"
 
 Player = {}
 Player.__index = Player
+Player.camera_x_offset = -150
+Player.camera_y_offset = -275
 
 function Player.new(x, y)
   local properties = {}
@@ -20,6 +22,14 @@ end
 
 function Player:get_y()
   return self.y
+end
+
+function Player:get_camera_x()
+  return self.x + Player.camera_x_offset
+end
+
+function Player:get_camera_y()
+  return self.y + Player.camera_y_offset
 end
 
 function Player:update(dt)
