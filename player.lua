@@ -7,6 +7,7 @@ Player.camera_y_offset = -275
 
 function Player.new(world, x, y)
   local properties = {
+    id = "player",
     body = love.physics.newBody(world, x, y),
     speed = 10000,
     jump = 5000000,
@@ -17,7 +18,7 @@ function Player.new(world, x, y)
   properties.bounding_box = love.physics.newRectangleShape(properties.body, 17, 32)
   properties.bounding_box:setFriction(1)
   properties.bounding_box:setRestitution(0.05)
-  properties.bounding_box:setData("player")
+  properties.bounding_box:setData(properties.id)
   properties.body:setMassFromShapes()
 --  properties.fist = love.physics.newBody(world, x + 10, y - 5)
 --  properties.fist:setMass(0, 0, 5, 0)
@@ -35,6 +36,10 @@ function Player.new(world, x, y)
 
   setmetatable(properties, Player)
   return properties
+end
+
+function Player:get_id()
+  return self.id
 end
 
 function Player:get_x()
