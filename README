@@ -1,0 +1,21 @@
+Paradigm Shift - A Programmer's Revolution
+==========================================
+
+Welcome to the 2d platforming beat-em-up game where you control 
+$mainCharacterName in a quest to $premise.
+
+
+Requirements
+------------
+
+* [Löve 0.5.0](http://love2d.org/)
+
+Controls
+--------
+
+* w: Jump
+* a: Move left
+* d: Move right  
+* space: Punch  
+* tab: Reset
+
