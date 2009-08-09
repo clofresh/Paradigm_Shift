@@ -45,21 +45,22 @@ end
 
 function Environment.collision(self, shape1, shape2, contact) 
     
-   local f, r = contact:getFriction(), contact:getRestitution() 
-   local s = contact:getSeparation() 
-   local px, py = contact:getPosition() 
-   local vx, vy = contact:getVelocity() 
-   local nx, ny = contact:getNormal() 
- 
-   self.text = "Last Collision:\n" 
-   self.text = self.text .. "Shapes: " .. shape1 .. " and " .. shape2 .. "\n" 
-   self.text = self.text .. "Position: " .. px .. "," .. py .. "\n" 
-   self.text = self.text .. "Velocity: " .. vx .. "," .. vy .. "\n" 
-   self.text = self.text .. "Normal: " .. nx .. "," .. ny .. "\n" 
-   self.text = self.text .. "Friction: " .. f .. "\n" 
-   self.text = self.text .. "Restitution: " .. r .. "\n" 
-   self.text = self.text .. "Separation: " .. s .. "\n" 
+  local f, r = contact:getFriction(), contact:getRestitution() 
+  local s = contact:getSeparation() 
+  local px, py = contact:getPosition() 
+  local vx, vy = contact:getVelocity() 
+  local nx, ny = contact:getNormal() 
+
+  self.text = "Last Collision:\n" 
+  self.text = self.text .. "Shapes: " .. shape1 .. " and " .. shape2 .. "\n" 
+  self.text = self.text .. "Position: " .. px .. "," .. py .. "\n" 
+  self.text = self.text .. "Velocity: " .. vx .. "," .. vy .. "\n" 
+  self.text = self.text .. "Normal: " .. nx .. "," .. ny .. "\n" 
+  self.text = self.text .. "Friction: " .. f .. "\n" 
+  self.text = self.text .. "Restitution: " .. r .. "\n" 
+  self.text = self.text .. "Separation: " .. s .. "\n" 
    
+  -- assumes there's an entities global table
   for i, entity_id in ipairs({shape1, shape2}) do
     entity = entities[entity_id]
     if entity and entity["set_can_jump"] then
@@ -87,8 +88,6 @@ function ChaseCam:get_id()
 end
 
 function ChaseCam:update(dt)
---  getCamera():setOrigin(entities.player:get_camera_x(), entities.player:get_camera_y())
-  
   local cx = self.to_follow:get_camera_x()
   local cy = self.to_follow:get_camera_y()
 
