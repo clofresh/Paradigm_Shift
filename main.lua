@@ -1,28 +1,28 @@
+love.filesystem.require "camera.lua"
 love.filesystem.require "player.lua"
 love.filesystem.require "npc.lua"
---love.filesystem.require "camera.lua"
+love.filesystem.require "environment.lua"
 
 function load()
   local font = love.graphics.newFont(love.default_font, 12) 
   love.graphics.setFont(font) 
-
-  world = love.physics.newWorld(love.graphics.getWidth(), love.graphics.getHeight())
-  world:setGravity(0, 500)
   
+  local environment = Environment.new(love.graphics.getWidth()*1.5, love.graphics.getHeight())
+  environment:setGravity(0, 500)
+
   entities = {
-    player = Player.new(world, 100, 300),
-    badguy = BadGuy.new(world, 400, 300)
+    ["environment"] = environment,
+    player = Player.new(environment.world, 100, 300),
+    badguy = BadGuy.new(environment.world, 400, 300)
   }
 
-	ground = love.physics.newBody(world, 0, 0, 0)
-	ground_shape = love.physics.newRectangleShape(ground, 0, 500, 100000, 50)
-  ground_shape:setData("Ground")
-	world:setCallback(collision) 
+  entities.camera = ChaseCam.new(entities.player, environment)
+
+	environment.world:setCallback(collision) 
   text = ""
 end
 
 function update(dt)
-  world:update(dt)
   for name, entity in pairs(entities) do
     entity:update(dt)
   end
@@ -32,10 +32,7 @@ function draw()
   for name, entity in pairs(entities) do
     entity:draw()
   end
-
-	love.graphics.polygon(love.draw_line, ground_shape:getPoints())
   love.graphics.draw(text, 50, 50) 
---  getCamera():setOrigin(entities.player:get_camera_x(), entities.player:get_camera_y())
 end
 
 function keypressed(key) 
@@ -69,5 +66,5 @@ function collision(a, b, c)
   end
 end 
 
---camera.lateInit()
+camera.lateInit()
 
