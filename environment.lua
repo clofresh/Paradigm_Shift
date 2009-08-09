@@ -44,10 +44,7 @@ function ChaseCam.new(to_follow, environment)
 end
 
 function ChaseCam:update(dt)
---  getCamera():setOrigin(entities.player:get_camera_x(), entities.player:get_camera_y())
-  
-  local cx = self.to_follow:get_camera_x()
-  local cy = self.to_follow:get_camera_y()
+  local cx = self.to_follow:get_camera_x(), cy = self.to_follow:get_camera_y()
 
   if cx < 0 then 
     cx = 0
