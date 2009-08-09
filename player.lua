@@ -20,19 +20,8 @@ function Player.new(world, x, y)
   properties.bounding_box:setRestitution(0.05)
   properties.bounding_box:setData(properties.id)
   properties.body:setMassFromShapes()
---  properties.fist = love.physics.newBody(world, x + 10, y - 5)
---  properties.fist:setMass(0, 0, 5, 0)
---[[
-  properties.arm = love.physics.newPrismaticJoint(
-    properties.body,
-    properties.fist, 
-    properties.body:getX() + 10, 
-    properties.body:getY() - 5, 
-    properties.body:getX() + 20, 
-    properties.body:getY() - 5
-  )
-
-]]--
+  properties.fist = love.physics.newBody(world, x + 10, y - 5, 100)
+  properties.punch = nil
 
   setmetatable(properties, Player)
   return properties
@@ -101,13 +90,18 @@ function Player:update(dt)
     next_actions["punching"] = true
   else
     self.actions["punching"]  = false
+      if self.punch then
+        self.punch:destroy()
+        self.punch = nil
+      end
   end
 
   if next_actions["punching"] then
     if not self.actions["punching"] then
       self.image = animation.getAnimation("punching")
       self.actions["punching"] = true
-      self.fist:applyForce(100 * self.direction, 0)
+      self.punch = love.physics.newCircleShape(self.fist, 5)
+      self.punch:setData("punch")
     end
   elseif next_actions["walking"] then
     self.body:applyImpulse(self.direction * self.speed, 0)
@@ -123,11 +117,13 @@ function Player:update(dt)
   end
 
   self.image:update(dt)
+  self.fist:setX(self:get_x() + 20 * self.direction)
+  self.fist:setY(self:get_y() - 5)
 end
 
 function Player:draw()
   love.graphics.draw(self.image, self:get_x(), self:get_y(), 0, self.direction, 1)
---  love.graphics.circle(love.draw_fill, self.fist:getX(), self.fist:getY(), 5)
+  -- love.graphics.circle(love.draw_fill, self.fist:getX(), self.fist:getY(), 5)
   
   -- Draw player's coordinate axis for debugging
   -- love.graphics.line(self:get_x() - 100, self:get_y(), self:get_x() + 100, self:get_y())
