@@ -61,7 +61,7 @@ function Environment.collision(self, shape1, shape2, contact)
    self.text = self.text .. "Separation: " .. s .. "\n" 
    
   for i, entity_id in ipairs({shape1, shape2}) do
-    entity = EntityManager.entities[entity_id]
+    entity = entities[entity_id]
     if entity and entity["set_can_jump"] then
       entity:set_can_jump(1)
     end
@@ -111,24 +111,6 @@ function ChaseCam:draw(dt)
 end
 
 
-
-
-EntityManager = {
-  entities = {},
-
-  update = function(dt)
-    for name, entity in pairs(EntityManager.entities) do
-      entity:update(dt)
-    end
-  end,
-  
-  draw = function()
-    for name, entity in pairs(EntityManager.entities) do
-      entity:draw()
-    end
-  end
-
-}
 
 
 

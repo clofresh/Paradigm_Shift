@@ -9,25 +9,25 @@ function load()
 
   local player = Player.new(environment.world, 100, 300)
 
-  local entities = {
+  entities = {
     ["environment"] = environment,
     ["player"] = player,
     badguy = BadGuy.new(environment.world, 400, 300),
     camera = ChaseCam.new(player, environment)
   }
-  
-  for name, entity in pairs(entities) do
-    EntityManager.entities[name] = entity
-  end
 
 end
 
 function update(dt)
-  EntityManager.update(dt)
+  for name, entity in pairs(entities) do
+    entity:update(dt)
+  end
 end
 
 function draw()
-  EntityManager.draw()
+  for name, entity in pairs(entities) do
+    entity:draw()
+  end
 end
 
 function keypressed(key) 
